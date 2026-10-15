@@ -1,26 +1,53 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "source": "/customers/(.*)",
+      "destination": "/api/index.js"
     },
     {
-      "src": "server/index.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "server/index.js"
+      "source": "/customers",
+      "destination": "/api/index.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "client/$1"
+      "source": "/products/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/products",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/wishlist/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/wishlist",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/cart/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/cart",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/orders/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/orders",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!assets/|favicon\\.ico).*)",
+      "destination": "/index.html"
     }
   ]
 }
