@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "npm --prefix client run build",
+    "build": "cd client && npm install && npm run build",
     "install-all": "npm --prefix client install && npm --prefix server install"
   },
   "dependencies": {
