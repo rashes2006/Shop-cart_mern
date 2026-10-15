@@ -33,23 +33,47 @@ app.use(cookieParser());
 
 // Connect to MongoDB
 const seedProducts = require('./utils/seedProducts');
-let isConnected = false;
+let isConnecting = null;
+
 const connectDB = async () => {
-  if (isConnected) return;
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected successfully');
-    await seedProducts();
-    isConnected = true;
-  } catch (error) {
-    console.error('MongoDB connection failed:', error.message);
+  if (mongoose.connection.readyState === 1) {
+    return;
   }
+
+  if (isConnecting) {
+    return isConnecting;
+  }
+
+  isConnecting = mongoose.connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000,
+  }).then(async () => {
+    console.log('MongoDB connected successfully');
+    try {
+      await seedProducts();
+    } catch (e) {
+      console.warn('Seeding failed or skipped:', e.message);
+    }
+  }).catch((err) => {
+    isConnecting = null;
+    console.error('MongoDB connection error:', err.message);
+    throw err;
+  });
+
+  return isConnecting;
 };
 
 // Connect DB on every request (for serverless)
 app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: 'Database connection failed. Please ensure Atlas IP whitelist allows 0.0.0.0/0.',
+      error: error.message,
+    });
+  }
 });
 
 app.get('/', (req, res) => {
