@@ -83,7 +83,13 @@ app.get('/', (req, res) => {
   });
 });
 
-// Mount Routes
+// Mount Routes (support both /api/* and direct paths)
+app.use('/api/customers', customerRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+
 app.use('/customers', customerRoutes);
 app.use('/products', productRoutes);
 app.use('/wishlist', wishlistRoutes);
