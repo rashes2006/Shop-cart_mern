@@ -35,9 +35,11 @@ function Navbar({ showLogout, user, wishlistCount }) {
   const handleLogout = async () => {
     try {
       await api.post('/customers/logout');
-      clearCart();
-      navigate('/login');
     } catch {
+      // ignore network errors on logout
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('customer');
       clearCart();
       navigate('/login');
     }

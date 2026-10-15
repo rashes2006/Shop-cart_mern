@@ -26,7 +26,13 @@ function Login() {
 
     setLoading(true);
     try {
-      await api.post('/customers/login', form);
+      const res = await api.post('/customers/login', form);
+      if (res.data?.token) {
+        localStorage.setItem('token', res.data.token);
+      }
+      if (res.data?.customer) {
+        localStorage.setItem('customer', JSON.stringify(res.data.customer));
+      }
       navigate('/home');
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid merchant credentials');

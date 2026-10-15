@@ -27,9 +27,13 @@ function ProductCard({ product, isInWishlist = false, onWishlistChange, onViewDe
         if (onWishlistChange) onWishlistChange(product._id, true);
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Unable to save product. Please try again.';
-      setWishlistError(msg);
-      setTimeout(() => setWishlistError(''), 3500);
+      if (err.response?.status === 401) {
+        setWishlistError('Please log in first to save items to your wishlist.');
+      } else {
+        const msg = err.response?.data?.message || 'Unable to save product. Please try again.';
+        setWishlistError(msg);
+      }
+      setTimeout(() => setWishlistError(''), 4000);
     } finally {
       setWishlistLoading(false);
     }
@@ -45,9 +49,13 @@ function ProductCard({ product, isInWishlist = false, onWishlistChange, onViewDe
       setCartMsg('Added!');
       setTimeout(() => setCartMsg(''), 2000);
     } catch (err) {
-      const msg = err.response?.data?.message || 'Could not add to cart';
-      setCartMsg(msg);
-      setTimeout(() => setCartMsg(''), 3000);
+      if (err.response?.status === 401) {
+        setCartMsg('Please log in first to add items to your cart.');
+      } else {
+        const msg = err.response?.data?.message || 'Could not add to cart';
+        setCartMsg(msg);
+      }
+      setTimeout(() => setCartMsg(''), 4000);
     } finally {
       setCartLoading(false);
     }
